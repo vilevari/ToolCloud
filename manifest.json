@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "ToolCloud - QoL for Soundcloud",
+  "version": "1.0",
+  "description": "This Addon provides a variety of tools that improve the SoundCloud experience.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://soundcloud.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://soundcloud.com/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "ToolCloud",
+    "default_popup": "popup.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ToolCloud@SoundCloudTools.local"
+    }
+  }
+}

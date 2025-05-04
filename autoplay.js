@@ -1,6 +1,4 @@
 (function() {
-    const { simulateClick } = ToolCloudUtils;
-
     async function startPlaylist_shuffle() {
         ToolCloudUtils.log("Starting playlist on shuffle mode.");
         setTimeout(() => {
@@ -9,8 +7,8 @@
                 pressPlayButton();
                 setTimeout(() => {
                     pressSkipButton();
-                }, 700);
-            }, 700);
+                }, 600);
+            }, 1000);
         }, 300);
     }
 
@@ -18,7 +16,7 @@
         const playButton = document.querySelectorAll('[title="Play"]')[0];
     
         if(playButton){
-            simulateClick(playButton);
+            ToolCloudUtils.simulateClick(playButton);
             ToolCloudUtils.log("Playing playlist.");
         } else {
             ToolCloudUtils.log("No play button was found!");
@@ -30,7 +28,7 @@
         
         if(shuffleButton) {
           if(!shuffleButton.classList.contains('m-shuffling')){
-            simulateClick(shuffleButton);
+            ToolCloudUtils.simulateClick(shuffleButton);
             ToolCloudUtils.log("Activating shuffle.");
           } else {
             ToolCloudUtils.log("Already shuffling.");
@@ -45,7 +43,7 @@
         const skipButton = document.querySelector('.skipControl__next');
 
         if(skipButton){
-            simulateClick(skipButton);
+            ToolCloudUtils.simulateClick(skipButton);
             ToolCloudUtils.log("Skipping first song.");
         } else {
           ToolCloudUtils.log("No skip button found!");

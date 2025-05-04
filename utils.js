@@ -15,14 +15,8 @@
     }
   }
 
-  function wait(ms) {
-    console.debug("WAITING: ", ms);
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   window.ToolCloudUtils = {
     log,
     simulateClick,
-    wait
   };
 })();

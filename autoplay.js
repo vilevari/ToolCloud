@@ -9,8 +9,8 @@
                 pressPlayButton();
                 setTimeout(() => {
                     pressSkipButton();
-                }, 1000);
-            }, 1000);
+                }, 700);
+            }, 700);
         }, 300);
     }
 

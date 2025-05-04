@@ -34,7 +34,7 @@
       let lastScrollTop = Infinity;
       let retries = 0;
   
-      scrollInterval = setInterval(() => {
+      upInterval = setInterval(() => {
         window.scrollTo(0, 0);
   
         const currentTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -47,8 +47,8 @@
         }
   
         if (retries >= 3) {
-          clearInterval(scrollInterval);
-          scrollInterval = null;
+          clearInterval(upInterval);
+          upInterval = null;
           ToolCloudUtils.log("Reached top of Playlist.");
           resolve();
         }

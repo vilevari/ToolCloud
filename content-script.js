@@ -1,5 +1,5 @@
 (function () {
-
+  
   ToolCloudUrlHandler.handleUrlChange();
 
   let lastUrl = location.href;

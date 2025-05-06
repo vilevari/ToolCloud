@@ -4,6 +4,7 @@
     let volume = null;
 
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        console.debug("Got message:", message);
         switch (message.action) {
             case "skip":
                 skipControl();
@@ -14,6 +15,22 @@
             case "play":
                 playControl();
                 break;
+            case "getPlaybackStatus":
+                const playButton = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
+                if(!playButton){
+                    console.debug("Error retrieving playback status: No play button found");
+                    sendResponse("unknown");
+                    console.debug("Sending response: unknown");
+                    return true;
+                }
+                if (playButton.classList.contains("playing")){
+                    sendResponse("playing");
+                    console.debug("Sending response: playing");
+                } else {
+                    sendResponse("paused");
+                    console.debug("Sending response: paused");
+                }
+                return true;
             default:
                 ToolCloudUtils.log("No action found with message:", message.action);
                 break;

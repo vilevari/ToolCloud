@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const previousButton = document.getElementById("previous");
   const playControl = document.getElementById("playControl");
   const playIcon = playControl.querySelector('i');
+  changePlayIcon(playIcon);
 
   chrome.storage.local.get(["scrollEnabled"], (result) => {
     if (result && result.scrollEnabled !== undefined) {
@@ -30,49 +31,56 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.set({ autoplayShuffleEnabled: checkbox_autoplayShuffle.checked });
   });
 
-  function sendActionMession(action) {
-    chrome.tabs.query({}, (tabs) => {
-      const scTabs = tabs.filter(tab => {
-        return tab.url && tab.url.match(/^https?:\/\/(www\.)?soundcloud\.com\//);
-      });
-
-      if (scTabs.length === 0) {
-        console.warn("Kein SoundCloud-Tab gefunden.");
-        return;
-      }
-
-      scTabs.forEach(tab => {
-        chrome.tabs.sendMessage(tab.id, {action: action}, (response) => {
-          if (chrome.runtime.lastError) {
-            console.error(`Nachricht an Tab ${tab.id} fehlgeschlagen:`, chrome.runtime.lastError.message);
-          } else {
-            console.debug(`Action Message gesendet an Tab ${tab.id}:`, action);
-          }
-        });
-      });
-    });
-  }
-
-  function changePlayIcon(){
-    if(playIcon.classList.contains("fa-circle-play")){
-      playIcon.classList.remove("fa-circle-play");
-      playIcon.classList.add("fa-circle-pause");
-    } else {
-      playIcon.classList.remove("fa-circle-pause");
-      playIcon.classList.add("fa-circle-play");
-    }
-  }
-
   playControl.addEventListener('click', () => {
-    sendActionMession("play");
+    sendActionMessage("play");
     changePlayIcon();
   });
 
   previousButton.addEventListener('click', () => {
-    sendActionMession("previous");
+    sendActionMessage("previous");
   });
   
   skipButton.addEventListener('click', () => {
-    sendActionMession("skip");
+    sendActionMessage("skip");
   });
 });
+
+function sendActionMessage(action, onResponse) {
+  chrome.tabs.query({}, (tabs) => {
+    const scTabs = tabs.filter(tab => {
+      return tab.url && tab.url.match(/^https?:\/\/(www\.)?soundcloud\.com\//);
+    });
+
+    if (scTabs.length === 0) {
+      console.warn("Kein SoundCloud-Tab gefunden.");
+      return;
+    }
+
+    scTabs.forEach(tab => {
+      chrome.tabs.sendMessage(tab.id, {action: action}, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error(`Nachricht an Tab ${tab.id} fehlgeschlagen:`, chrome.runtime.lastError.message);
+        } else {
+          console.debug(`Action Message gesendet an Tab ${tab.id}:`, action);
+
+          if(typeof onResponse === 'function') {
+            onResponse(tab.id, response)
+          }
+        }
+      });
+    });
+  });
+}
+
+function changePlayIcon(playIcon){
+  sendActionMessage("getPlaybackStatus", (_tabId, status) => {
+    console.debug("Got answer with status:", status);
+    if (status === 'playing') {
+      playIcon.classList.replace('fa-circle-play', 'fa-circle-pause');
+    } else if (status === 'paused') {
+      playIcon.classList.replace('fa-circle-pause', 'fa-circle-play');
+    } else {
+      console.warn("Fehler beim wechseln des Playbackstatus:", status, _tabId);
+    }
+  });
+}

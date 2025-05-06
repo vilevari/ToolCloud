@@ -1,6 +1,4 @@
 (function() {
-    const { log } = ToolCloudUtils;
-    const { autoScrollPlaylist, stopScroll } = ToolCloudScroll;
 
     function shouldScroll() {
         return location.pathname.includes("/sets/");
@@ -44,10 +42,10 @@
 
     chrome.storage.onChanged.addListener((changes, areaName) => {
         if (areaName === "local" && changes.scrollEnabled) {
-            log("Scroll setting changed:", changes.scrollEnabled.newValue);
+            ToolCloudUtils.log("Scroll setting changed:", changes.scrollEnabled.newValue);
             handleScrollSetting(changes.scrollEnabled.newValue);
         } else if (areaName === "local" && changes.autoplayShuffleEnabled) {
-            log("Autoplay setting changed: ", changes.autoplayShuffleEnabled.newValue);
+            ToolCloudUtils.log("Autoplay setting changed: ", changes.autoplayShuffleEnabled.newValue);
         }
       });
 

@@ -12,6 +12,18 @@ body {
     align-items: center;
 }
 
+.playControls {
+    display: flex;
+    justify-content: center;
+}
+
+.divider {
+    background-color:#f50;
+    height: 1px;
+    width: 180px;
+    margin: 12px auto 20px;
+}
+
 label {
     display: flex;
     width: 180px;
@@ -95,4 +107,25 @@ h2 {
 .info-icon {
     font-size: 16px;
     line-height: 1;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+button i {
+    color: #ffffff;
+    font-size: 30px;
+    margin: 0 12px;
+}
+
+button i:hover {
+    color: #aaa;
+}
+
+button:active i {
+    color: #666;
+    transform: scale(0.95);
 }

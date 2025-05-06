@@ -6,31 +6,10 @@ body {
     width: 220px;
 }
 
-.checkboxes {
-    display:flex; 
-    flex-direction: column; 
-    align-items: center;
-}
-
-label {
-    display: flex;
-    width: 180px;
-    gap: 8px;
-    margin: 10px 0;
-}
-
-label:hover {
-    color: #999;
-}
-
 h2 {
     text-align: center;
     margin-bottom: 0;
     margin-top: 20px;
-}
-
-.custom-checkbox input {
-    display: none;
 }
 
 .caption {
@@ -39,6 +18,51 @@ h2 {
     text-align: center;
     font-size: 12px;
     margin-bottom: 20px;
+}
+
+.checkboxes {
+    display:flex; 
+    flex-direction: column; 
+    align-items: center;
+}
+
+.playControls {
+    display: flex;
+    justify-content: center;
+}
+
+.divider {
+    background-color:#f50;
+    height: 1px;
+    width: 180px;
+    margin: 12px auto 20px;
+}
+
+label {
+    display: flex;
+    width: 180px;
+    gap: 8px;
+    margin: 10px 0;
+    align-items: center;
+}
+
+label:hover {
+    color: #999;
+}
+
+.custom-checkbox {
+    transition: transform 0.1s ease;
+}
+
+.custom-checkbox input {
+    display: none;
+}
+
+.custom-checkbox .label-text {
+    flex: 1;
+    white-space: normal;
+    word-break: break-word;
+    align-self: center;
 }
 
 .custom-checkbox .checkmark {
@@ -51,6 +75,10 @@ h2 {
     position: relative;
 }
 
+.custom-checkbox:active{
+    transform: scale(0.95);
+}
+
 .custom-checkbox input:checked + .checkmark {
     background-color: #f50;
 }
@@ -59,8 +87,8 @@ h2 {
     content: "";
     position: absolute;
     display: none;
-    left: 6px;
-    top: 2px;
+    left: 7px;
+    top: 3px;
     width: 5px;
     height: 10px;
     border: solid white;
@@ -95,4 +123,26 @@ h2 {
 .info-icon {
     font-size: 16px;
     line-height: 1;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+button i {
+    color: #ffffff;
+    font-size: 30px;
+    margin: 0 12px;
+    transition: transform 0.1s ease;
+}
+
+button i:hover {
+    color: #aaa;
+}
+
+button:active i {
+    color: #666;
+    transform: scale(0.95);
 }

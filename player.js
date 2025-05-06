@@ -18,28 +18,20 @@
             case "getPlaybackStatus":
                 const playButton = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
                 if(!playButton){
-                    console.debug("Error retrieving playback status: No play button found");
                     sendResponse("unknown");
-                    console.debug("Sending response: unknown");
                     return true;
                 }
                 if (playButton.classList.contains("playing")){
                     sendResponse("playing");
-                    console.debug("Sending response: playing");
                 } else {
                     sendResponse("paused");
-                    console.debug("Sending response: paused");
                 }
                 return true;
             default:
-                ToolCloudUtils.log("No action found with message:", message.action);
+                ToolCloudUtils.warn("No action found with message:", message.action);
                 break;
         }
-        /*
-        if (message.action === "skip") {
-            skipControl();
-        }*/
-    })
+    });
 
     function getSlider() {
         volume = document.querySelector('.volume');
@@ -48,7 +40,7 @@
         setTimeout(() => {
             slider = document.querySelector('.volume__sliderWrapper');
             if (!slider) {
-                console.debug("Slider not found.");
+                ToolCloudUtils.warn("Slider not found.");
                 return;
             }
             volume.classList.remove('expanded');
@@ -57,16 +49,19 @@
 
     function playControl() {
         const playControl = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
+        if(!playControl) ToolCloudUtils.warn("Playcontrol not found.");
         ToolCloudUtils.simulateClick(playControl);
     }
 
     function skipControl() {
         const skipControl = document.querySelector(".skipControl.sc-ir.playControls__control.playControls__next");
+        if(!skipControl) ToolCloudUtils.warn("Skipcontrol not found.");
         ToolCloudUtils.simulateClick(skipControl);
     }
 
     function previousControl() {
         const previousControl = document.querySelector(".skipControl.sc-ir.playControls__control.playControls__prev");
+        if(!previousControl) ToolCloudUtils.warn("Previouscontrol not found.");
         ToolCloudUtils.simulateClick(previousControl);
     }
 
@@ -74,6 +69,7 @@
         /*
         ============================================================
                  This works with a small margin of error.
+                                WIP
         ============================================================
 
         console.debug("called with percent: ", percent);
@@ -127,7 +123,6 @@
         getSlider,
         playControl,
         skipControl,
-        previousControl,
-        test
+        previousControl
     };
 }) ();

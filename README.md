@@ -23,12 +23,3 @@ Checks for URL changes every 1 second. When detecting a URL change where the URL
 - skip the first song for a true shuffle experience
 
 __Caution:__ If this feature is enabled alongside other, similar features it might get overruled by them or overrule them.
-
-## Playcontrol
-A playback timeline in the addons shows you the current songs progress.
-From there you can use previous, skip, play/pause buttons in the addon itself.
-
-Control SoundCloud from __anywhere__ in your browser!
-
-## Credit:
-Icons provided by: Md Tanvirul Haque: https://www.flaticon.com/authors/md-tanvirul-haque

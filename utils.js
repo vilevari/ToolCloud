@@ -3,6 +3,10 @@
   console.log("[ToolCloud]", ...args);
   }
 
+  function warn(...args) {
+    console.warn("[ToolCloud]", ...args);
+  }
+
   function simulateClick(element) {
     if (element) {
       element.dispatchEvent(new MouseEvent("click", {
@@ -18,5 +22,6 @@
   window.ToolCloudUtils = {
     log,
     simulateClick,
+    warn
   };
 })();

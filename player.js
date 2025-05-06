@@ -14,15 +14,47 @@
             case "play":
                 playControl();
                 break;
+            case "getPlaybackStatus":
+                const playButton = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
+                if(!playButton){
+                    sendResponse("unknown");
+                    return true;
+                }
+                if (playButton.classList.contains("playing")){
+                    sendResponse("playing");
+                } else {
+                    sendResponse("paused");
+                }
+                return true;
+            case "getPlaybackTime_timeline":
+                const playbackTimeline = document.querySelector(".playbackTimeline__progressHandle.sc-ir");
+                if(!playbackTimeline){
+                    sendResponse("unknown");
+                    return true;
+                }
+                sendResponse(parseFloat(playbackTimeline.style.left));
+                return true;
+            case "getPlaybackTime_timer":
+                const playbackTimer = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
+                if(!playbackTimer){
+                    sendResponse("unknown");
+                    return true;
+                }
+                sendResponse(parseInt(playbackTimer.getAttribute('aria-valuenow')));
+                return true;
+            case "getSongDuration_timer":
+                const songDuration = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
+                if(!songDuration){
+                    sendResponse("unknown");
+                    return true;
+                }
+                sendResponse(parseInt(songDuration.getAttribute('aria-valuemax')));
+                return true;
             default:
-                ToolCloudUtils.log("No action found with message:", message.action);
+                ToolCloudUtils.warn("No action found with message:", message.action);
                 break;
         }
-        /*
-        if (message.action === "skip") {
-            skipControl();
-        }*/
-    })
+    });
 
     function getSlider() {
         volume = document.querySelector('.volume');
@@ -31,7 +63,7 @@
         setTimeout(() => {
             slider = document.querySelector('.volume__sliderWrapper');
             if (!slider) {
-                console.debug("Slider not found.");
+                ToolCloudUtils.warn("Slider not found.");
                 return;
             }
             volume.classList.remove('expanded');
@@ -40,16 +72,19 @@
 
     function playControl() {
         const playControl = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
+        if(!playControl) ToolCloudUtils.warn("Playcontrol not found.");
         ToolCloudUtils.simulateClick(playControl);
     }
 
     function skipControl() {
         const skipControl = document.querySelector(".skipControl.sc-ir.playControls__control.playControls__next");
+        if(!skipControl) ToolCloudUtils.warn("Skipcontrol not found.");
         ToolCloudUtils.simulateClick(skipControl);
     }
 
     function previousControl() {
         const previousControl = document.querySelector(".skipControl.sc-ir.playControls__control.playControls__prev");
+        if(!previousControl) ToolCloudUtils.warn("Previouscontrol not found.");
         ToolCloudUtils.simulateClick(previousControl);
     }
 
@@ -57,6 +92,7 @@
         /*
         ============================================================
                  This works with a small margin of error.
+                                WIP
         ============================================================
 
         console.debug("called with percent: ", percent);
@@ -110,7 +146,6 @@
         getSlider,
         playControl,
         skipControl,
-        previousControl,
-        test
+        previousControl
     };
 }) ();

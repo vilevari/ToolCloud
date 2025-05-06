@@ -5,7 +5,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const previousButton = document.getElementById("previous");
   const playControl = document.getElementById("playControl");
   const playIcon = playControl.querySelector('i');
+  const playbackTimeline = document.getElementById("timeline_foreground");
+  const playbackTimer = document.getElementById("timeline_secondsPlayed");
+  const songDuration = document.getElementById("timeline_songDuration");
   changePlayIcon(playIcon);
+  displayCurrentPlaybackTime_timeline(playbackTimeline);
+  displayCurrentPlaybackTime_timer(playbackTimer, songDuration);
+  displaySongDuration(songDuration);
+  setInterval(() => {
+    displayCurrentPlaybackTime_timeline(playbackTimeline);
+    displayCurrentPlaybackTime_timer(playbackTimer, songDuration);
+  }, 1000);
 
   chrome.storage.local.get(["scrollEnabled"], (result) => {
     if (result && result.scrollEnabled !== undefined) {
@@ -33,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   playControl.addEventListener('click', () => {
     sendActionMessage("play");
-    changePlayIcon();
+    changePlayIcon(playIcon);
   });
 
   previousButton.addEventListener('click', () => {
@@ -59,9 +69,9 @@ function sendActionMessage(action, onResponse) {
     scTabs.forEach(tab => {
       chrome.tabs.sendMessage(tab.id, {action: action}, (response) => {
         if (chrome.runtime.lastError) {
-          console.error(`Nachricht an Tab ${tab.id} fehlgeschlagen:`, chrome.runtime.lastError.message);
+          console.error(`Action message to tab ${tab.id} failed:`, chrome.runtime.lastError.message);
         } else {
-          console.debug(`Action Message gesendet an Tab ${tab.id}:`, action);
+          console.debug(`Sent action message to tab ${tab.id}:`, action);
 
           if(typeof onResponse === 'function') {
             onResponse(tab.id, response)
@@ -69,6 +79,44 @@ function sendActionMessage(action, onResponse) {
         }
       });
     });
+  });
+}
+
+function displaySongDuration(songDuration) {
+  sendActionMessage("getSongDuration_timer", (_tabId, progress) => {
+    console.debug("Got answer with progress of:", progress);
+    if(progress === 'unknown'){
+      console.warn("Fehler beim auslesen der Songduration:", progress, _tabId);
+    } else {
+      const minutes = Math.floor(progress / 60);
+      const seconds = progress % 60;
+      songDuration.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+  });
+}
+
+function displayCurrentPlaybackTime_timer(playbackTimer, songDuration){
+  sendActionMessage("getPlaybackTime_timer", (_tabId, progress) => {
+    console.debug("Got answer with progress of:", progress);
+    if(progress === 'unknown'){
+      console.warn("Fehler beim auslesen des Songprogress (Timer):", progress, _tabId);
+    } else {
+      if(progress < 2) displaySongDuration(songDuration);
+      const minutes = Math.floor(progress / 60);
+      const seconds = progress % 60;
+      playbackTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+  });
+}
+
+function displayCurrentPlaybackTime_timeline(playbackTimeline){
+  sendActionMessage("getPlaybackTime_timeline", (_tabId, progress) => {
+    console.debug("Got answer with progress of:", progress);
+    if(progress === 'unknown'){
+      console.warn("Fehler beim auslesen des Songprogress (Timeline):", progress, _tabId);
+    } else {
+      playbackTimeline.style.width = progress + '%';
+    }
   });
 }
 

@@ -8,6 +8,7 @@
 <body>
   <h2>ToolCloud</h2>
   <span class="caption">QoL Improvements for SoundCloud.com</span>
+
   <div class="checkboxes">
     <label class="custom-checkbox">
       <input type="checkbox" id="toggle-scroll">
@@ -24,7 +25,14 @@
       </span>
     </label>
   </div>
-  <div class="divider"></div>
+
+  <div class="timeline">
+    <div class="background"></div>
+    <div id="timeline_foreground" class="foreground"></div>
+    <span id="timeline_secondsPlayed" class="secondsPlayed">0:00</span>
+    <span id="timeline_songDuration" class="songDuration">0:01</span>
+  </div>
+
   <div class="playControls">
     <button id="previous" title="Previous">
       <i class="fas fa-step-backward"></i>
@@ -36,6 +44,7 @@
       <i class="fas fa-step-forward"></i>
     </button>
   </div>
+
   <footer class="footer">
     <span>
       made by

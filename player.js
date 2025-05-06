@@ -4,7 +4,6 @@
     let volume = null;
 
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        console.debug("Got message:", message);
         switch (message.action) {
             case "skip":
                 skipControl();
@@ -26,6 +25,30 @@
                 } else {
                     sendResponse("paused");
                 }
+                return true;
+            case "getPlaybackTime_timeline":
+                const playbackTimeline = document.querySelector(".playbackTimeline__progressHandle.sc-ir");
+                if(!playbackTimeline){
+                    sendResponse("unknown");
+                    return true;
+                }
+                sendResponse(parseFloat(playbackTimeline.style.left));
+                return true;
+            case "getPlaybackTime_timer":
+                const playbackTimer = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
+                if(!playbackTimer){
+                    sendResponse("unknown");
+                    return true;
+                }
+                sendResponse(parseInt(playbackTimer.getAttribute('aria-valuenow')));
+                return true;
+            case "getSongDuration_timer":
+                const songDuration = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
+                if(!songDuration){
+                    sendResponse("unknown");
+                    return true;
+                }
+                sendResponse(parseInt(songDuration.getAttribute('aria-valuemax')));
                 return true;
             default:
                 ToolCloudUtils.warn("No action found with message:", message.action);

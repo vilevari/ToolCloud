@@ -23,5 +23,3 @@ Checks for URL changes every 1 second. When detecting a URL change where the URL
 - skip the first song for a true shuffle experience
 
 __Caution:__ If this feature is enabled alongside other, similar features it might get overruled by them or overrule them.
-
-Icons provided by: [Md Tanvirul Haque](https://www.flaticon.com/authors/md-tanvirul-haque) 

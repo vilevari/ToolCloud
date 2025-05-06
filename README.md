@@ -24,4 +24,8 @@ Checks for URL changes every 1 second. When detecting a URL change where the URL
 
 __Caution:__ If this feature is enabled alongside other, similar features it might get overruled by them or overrule them.
 
+## Playcontrol
+Allows you to use previous, skip, play/pause buttons from anywhere in your browser. 
+
+## Credit:
 Icons provided by: Md Tanvirul Haque: https://www.flaticon.com/authors/md-tanvirul-haque

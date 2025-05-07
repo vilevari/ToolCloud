@@ -8,13 +8,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const playbackTimeline = document.getElementById("timeline_foreground");
   const playbackTimer = document.getElementById("timeline_secondsPlayed");
   const songDuration = document.getElementById("timeline_songDuration");
+  const songTitle = document.getElementById("songTitle");
+  const scrollContent = document.getElementById("scroll-content");
+  const scrollWrapper = document.getElementById("scroll-wrapper");
   changePlayIcon(playIcon);
   displayCurrentPlaybackTime_timeline(playbackTimeline);
   displayCurrentPlaybackTime_timer(playbackTimer, songDuration);
   displaySongDuration(songDuration);
+  displaySongTitle(songTitle);
   setInterval(() => {
     displayCurrentPlaybackTime_timeline(playbackTimeline);
     displayCurrentPlaybackTime_timer(playbackTimer, songDuration);
+    displaySongTitle(songTitle);
   }, 1000);
 
   chrome.storage.local.get(["scrollEnabled"], (result) => {
@@ -53,6 +58,20 @@ document.addEventListener("DOMContentLoaded", () => {
   skipButton.addEventListener('click', () => {
     sendActionMessage("skip");
   });
+
+function displaySongTitle(songTitle) {
+    sendActionMessage("getSongTitle", (_tabId, title) => {
+        console.debug("Got answer with title:", title);
+        if (title === 'unknown') {
+            console.warn("Fehler beim auslesen des Titels:", title, _tabId);
+        } else {
+            songTitle.textContent = `${title}`;
+            scrollContent.style.width = (songTitle.offsetWidth * 2) + "px";
+            scrollContent.style.animationDuration = (songTitle.offsetWidth / 9) + "s";
+            scrollWrapper.style.width = songTitle.offsetWidth + "px";
+        }
+    });
+}
 });
 
 function sendActionMessage(action, onResponse) {
@@ -95,13 +114,15 @@ function displaySongDuration(songDuration) {
   });
 }
 
-function displayCurrentPlaybackTime_timer(playbackTimer, songDuration){
+function displayCurrentPlaybackTime_timer(playbackTimer, songDuration, songTitle){
   sendActionMessage("getPlaybackTime_timer", (_tabId, progress) => {
     console.debug("Got answer with progress of:", progress);
     if(progress === 'unknown'){
       console.warn("Fehler beim auslesen des Songprogress (Timer):", progress, _tabId);
     } else {
-      if(progress < 2) displaySongDuration(songDuration);
+      if(progress < 2){
+        displaySongDuration(songDuration);
+      } 
       const minutes = Math.floor(progress / 60);
       const seconds = progress % 60;
       playbackTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;

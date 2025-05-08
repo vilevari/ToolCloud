@@ -25,7 +25,7 @@ Checks for URL changes every 1 second. When detecting a URL change where the URL
 __Caution:__ If this feature is enabled alongside other, similar features it might get overruled by them or overrule them.
 
 ## Playcontrol
-A playback timeline in the addons shows you the current songs progress.
+A playback timeline in the addons shows you the current songs progress and title.
 From there you can use previous, skip, play/pause buttons in the addon itself.
 
 Control SoundCloud from __anywhere__ in your browser!

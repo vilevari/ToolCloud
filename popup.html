@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="popup.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css" />
+    <meta charset="UTF-8">
 </head>
 <body>
   <h2>ToolCloud</h2>
@@ -31,6 +32,14 @@
     <div id="timeline_foreground" class="foreground"></div>
     <span id="timeline_secondsPlayed" class="secondsPlayed">0:00</span>
     <span id="timeline_songDuration" class="songDuration">0:01</span>
+    <div class="title-wrapper">
+    <span class="nowPlaying">Now playing:</span>
+    <div id="scroll-wrapper" class="scroll-wrapper">
+        <div id="scroll-content" class="scroll-content">
+            <span id="songTitle" class="songTitle">-</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="playControls">

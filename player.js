@@ -50,6 +50,14 @@
                 }
                 sendResponse(parseInt(songDuration.getAttribute('aria-valuemax')));
                 return true;
+            case "getSongTitle":
+                const songTitle = document.querySelector('.playbackSoundBadge__titleLink.sc-truncate.sc-text-h5.sc-link-primary');
+                if (!songTitle) {
+                    sendResponse("unknown");
+                    return true;
+                }
+                sendResponse(songTitle.title);
+                return true;
             default:
                 ToolCloudUtils.warn("No action found with message:", message.action);
                 break;

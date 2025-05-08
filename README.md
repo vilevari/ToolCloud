@@ -26,7 +26,7 @@ __Caution:__ If this feature is enabled alongside other, similar features it mig
 
 ## Playcontrol
 A playback timeline in the addons shows you the current songs progress and title.
-From there you can use previous, skip, play/pause buttons in the addon itself.
+From there you can use previous, skip, play/pause buttons in the addon popup.
 
 Control SoundCloud from __anywhere__ in your browser!
 

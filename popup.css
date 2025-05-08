@@ -34,7 +34,7 @@ h2 {
 
 .timeline {
     position: relative;
-    margin: 12px auto 45px;
+    margin: 20px auto 55px;
     width: 180px;
 }
 
@@ -77,18 +77,11 @@ h2 {
     display: flex;
     white-space: nowrap;
     animation: scroll-text 10s linear infinite;
-}
-    
-.songTitle {
-    font-size: 10px;
+    will-change: transform;
 }
 
-@keyframes scroll-text {
-    0%, 10% { transform: translateX(0%);}
-    49% {transform: translateX(-50%); visibility: hidden;}
-    50%{visibility:hidden; transform: translateX(50%)}
-    51% { transform: translateX(50%); visibility: visible;}
-    90%, 100% { transform: translateX(0%); }
+.songTitle {
+    font-size: 10px;
 }
 
 .secondsPlayed {

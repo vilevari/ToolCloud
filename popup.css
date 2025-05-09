@@ -1,7 +1,18 @@
+:root {
+    --color-background: #121212;
+    --color-text: #ffffff;
+    --color-button: #ffffff;
+    --color-accent: #f50;
+    --color-muted: #aaa;
+    --color-muted-hover: #fff;
+    --color-active: #666;
+    --color-border: #333;
+}
+
 body {
     font-family: "Inter", sans-serif;
-    background-color: #121212;
-    color: #ffffff;
+    background-color: var(--color-background);
+    color: var(--color-text);
     padding: 0 10px 10px;
     width: 220px;
     overflow-x: hidden;
@@ -40,14 +51,14 @@ h2 {
 
 .foreground {
     position: absolute;
-    background-color: #f50;
+    background-color: var(--color-accent);
     height: 2px;
     width: 0;
 }
 
 .background {
     position:absolute;
-    background-color: #aaa;
+    background-color: var(--color-muted);
     height: 2px;
     width: 100%;
     border-radius: 2px;
@@ -100,7 +111,7 @@ h2 {
 }
 
 .divider {
-    background-color:#f50;
+    background-color: var(--color-accent);
     height: 2px;
     width: 180px;
     margin: 12px auto 20px;
@@ -116,7 +127,7 @@ label {
 }
 
 label:hover {
-    color: #999;
+    color: var(--color-muted);
 }
 
 .custom-checkbox {
@@ -138,7 +149,7 @@ label:hover {
     flex-shrink: 0;
     height: 20px;
     width: 20px;
-    background-color: #ffffff;
+    background-color: var(--color-button);
     border-radius: 4px;
     display: inline-block;
     position: relative;
@@ -146,10 +157,11 @@ label:hover {
 
 .custom-checkbox:active{
     transform: scale(0.95);
+    color: var(--color-active);
 }
 
 .custom-checkbox input:checked + .checkmark {
-    background-color: #f50;
+    background-color: var(--color-accent);
 }
 
 .custom-checkbox .checkmark::after {
@@ -177,16 +189,16 @@ label:hover {
     padding-top: 12px;
     border-top: 1px solid #333;
     margin-top: 20px;
-    color: #aaa;
+    color: var(--color-muted);
 }
 
 .footer a {
-    color: #aaa;
+    color: var(--color-muted);
     text-decoration: none;
 }
 
 .footer a:hover {
-    color: #fff;
+    color: var(--color-muted-hover);
 }
 
 .info-icon {
@@ -201,17 +213,17 @@ button {
 }
 
 button i {
-    color: #ffffff;
+    color: var(--color-button);
     font-size: 30px;
     margin: 0 12px;
     transition: transform 0.1s ease;
 }
 
 button i:hover {
-    color: #aaa;
+    color: var(--color-muted);
 }
 
 button:active i {
-    color: #666;
+    color: var(--color-active);
     transform: scale(0.95);
 }

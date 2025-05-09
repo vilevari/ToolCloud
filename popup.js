@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         () => displayCurrentPlaybackTime_timer(elements.playbackTimer, elements.songDuration),
         () => displaySongDuration(elements.songDuration),
         () => displaySongTitle(elements.songTitle),
-        () => setupControlEvenets(elements.playControl, elements.previousButton, elements.skipButton)
+        () => setupControlEvenets(elements.playControl, elements.previousButton, elements.skipButton, elements.playIcon)
     ].forEach(fn => fn());
 
     //every second after init
@@ -111,22 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-//sets up eventListeners for playcontrol buttons
-function setupControlEvenets(playControl, previous, skip) {
-    playControl.addEventListener('click', () => {
-        sendActionMessage("play");
-        changePlayIcon(elements.playIcon);
-    });
-
-    previous.addEventListener('click', () => {
-        sendActionMessage("previous");
-    });
-
-    skip.addEventListener('click', () => {
-        sendActionMessage("skip");
-    });
-}
-
 function sendActionMessage(action, onResponse) {
   chrome.tabs.query({}, (tabs) => {
     const scTabs = tabs.filter(tab => {
@@ -152,6 +136,30 @@ function sendActionMessage(action, onResponse) {
       });
     });
   });
+}
+
+//sets up eventListeners for playcontrol buttons
+function setupControlEvenets(playControl, previous, skip, playIcon) {
+    document.addEventListener("keydown", (event) => {
+        if (event.code === "Space" || event.key === " ") {
+            sendActionMessage("play");
+            changePlayIcon(playIcon);
+
+        }
+    })
+
+    playControl.addEventListener('click', () => {
+        sendActionMessage("play");
+        changePlayIcon(playIcon);
+    });
+
+    previous.addEventListener('click', () => {
+        sendActionMessage("previous");
+    });
+
+    skip.addEventListener('click', () => {
+        sendActionMessage("skip");
+    });
 }
 
 function displaySongDuration(songDuration) {

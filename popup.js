@@ -142,15 +142,17 @@ function sendActionMessage(action, onResponse) {
 function setupControlEvenets(playControl, previous, skip, playIcon) {
     document.addEventListener("keydown", (event) => {
         if (event.code === "Space" || event.key === " ") {
+            event.preventDefault();
             sendActionMessage("play");
             changePlayIcon(playIcon);
 
         }
     })
 
-    playControl.addEventListener('click', () => {
+    playControl.addEventListener('click', (e) => {
         sendActionMessage("play");
         changePlayIcon(playIcon);
+        e.currentTarget.blur();
     });
 
     previous.addEventListener('click', () => {

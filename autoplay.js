@@ -8,7 +8,7 @@
                 setTimeout(() => {
                     pressSkipButton();
                 }, 600);
-            }, 1000);
+            }, 700);
         }, 300);
     }
 

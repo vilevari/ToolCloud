@@ -1,3 +1,5 @@
+__DISCLAIMER:__ This addon is merely a learning experience for me. Don't expect frequent updates or commercial grade code or refinement in the app itself. 
+
 # ToolCloud
 This is a Firefox Browser-Addon designed to provide a variety of Quality of Life improvements to the SoundCloud.com Browser App.
 

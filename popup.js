@@ -1,67 +1,67 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const checkbox_autoscroll = document.getElementById("toggle-scroll");
-    const checkbox_autoplayShuffle = document.getElementById("toggle-autoplay_shuffle");
-    const skipButton = document.getElementById("skip");
-    const previousButton = document.getElementById("previous");
-    const playControl = document.getElementById("playControl");
-    const playIcon = playControl.querySelector('i');
-    const playbackTimeline = document.getElementById("timeline_foreground");
-    const playbackTimer = document.getElementById("timeline_secondsPlayed");
-    const songDuration = document.getElementById("timeline_songDuration");
-    const songTitle = document.getElementById("songTitle");
-    const scrollContent = document.getElementById("scroll-content");
-    const scrollWrapper = document.getElementById("scroll-wrapper");
+
+    //html elements used in following logic
+    const elements = {
+        autoscroll: document.getElementById("toggle-scroll"),
+        autoplayShuffle: document.getElementById("toggle-autoplay_shuffle"),
+        skipButton: document.getElementById("skip"),
+        previousButton: document.getElementById("previous"),
+        playControl: document.getElementById("playControl"),
+        playbackTimeline: document.getElementById("timeline_foreground"),
+        playbackTimer: document.getElementById("timeline_secondsPlayed"),
+        songDuration: document.getElementById("timeline_songDuration"),
+        songTitle: document.getElementById("songTitle"),
+        scrollContent: document.getElementById("scroll-content"),
+        scrollWrapper: document.getElementById("scroll-wrapper"),
+    };
+    elements.playIcon = elements.playControl.querySelector('i');
+
+    //needed for changing title animation from this document
     const styleEl = document.createElement('style');
     styleEl.id = 'my-keyframes-style';
     document.head.appendChild(styleEl);
     const sheet = styleEl.sheet;
-    changePlayIcon(playIcon);
-    displayCurrentPlaybackTime_timeline(playbackTimeline);
-    displayCurrentPlaybackTime_timer(playbackTimer, songDuration);
-    displaySongDuration(songDuration);
-    displaySongTitle(songTitle);
-    setInterval(() => {
-    displayCurrentPlaybackTime_timeline(playbackTimeline);
-    displayCurrentPlaybackTime_timer(playbackTimer);
-    }, 1000);
 
-    chrome.storage.local.get(["scrollEnabled"], (result) => {
-    if (result && result.scrollEnabled !== undefined) {
-        checkbox_autoscroll.checked = result.scrollEnabled;
-    } else {
-        checkbox_autoscroll.checked = false; 
+    //init
+    [
+        () => changePlayIcon(elements.playIcon),
+        () => displayCurrentPlaybackTime_timeline(elements.playbackTimeline),
+        () => displayCurrentPlaybackTime_timer(elements.playbackTimer, elements.songDuration),
+        () => displaySongDuration(elements.songDuration),
+        () => displaySongTitle(elements.songTitle),
+        () => setupControlEvenets(elements.playControl, elements.previousButton, elements.skipButton)
+    ].forEach(fn => fn());
+
+    //every second after init
+    setInterval(updatePlayback, 1000);
+    function updatePlayback() {
+        displayCurrentPlaybackTime_timeline(elements.playbackTimeline);
+        displayCurrentPlaybackTime_timer(elements.playbackTimer);
     }
-    });
 
-    chrome.storage.local.get(["autoplayShuffleEnabled"], (result) => {
-    if (result && result.autoplayShuffleEnabled !== undefined) {
-        checkbox_autoplayShuffle.checked = result.autoplayShuffleEnabled;
-    } else {
-        checkbox_autoplayShuffle.checked = false;
+    //responsible for loading & saving correct checkbox status
+    function loadToggleState(key, checkbox) {
+        chrome.storage.local.get([key], (result) => {
+            checkbox.checked = !!result[key];
+        });
     }
+
+    function saveToggleState(key, checkbox) {
+        chrome.storage.local.set({ [key]: checkbox.checked });
+    }
+
+    loadToggleState("scrollEnabled", elements.autoscroll);
+    loadToggleState("autoplayShuffleEnabled", elements.autoplayShuffle);
+
+    elements.autoscroll.addEventListener("change", () => {
+        saveToggleState("scrollEnabled", elements.autoscroll);
     });
 
-    checkbox_autoscroll.addEventListener("change", () => {
-    chrome.storage.local.set({ scrollEnabled: checkbox_autoscroll.checked });
+    elements.autoplayShuffle.addEventListener("change", () => {
+        saveToggleState("autoplayShuffleEnabled", elements.autoplayShuffle);
     });
 
-    checkbox_autoplayShuffle.addEventListener("change", () => {
-    chrome.storage.local.set({ autoplayShuffleEnabled: checkbox_autoplayShuffle.checked });
-    });
-
-    playControl.addEventListener('click', () => {
-    sendActionMessage("play");
-    changePlayIcon(playIcon);
-    });
-
-    previousButton.addEventListener('click', () => {
-    sendActionMessage("previous");
-    });
-  
-    skipButton.addEventListener('click', () => {
-    sendActionMessage("skip");
-    });
-
+    //displays song title and adds animation to it
     function displaySongTitle(songTitle) {
         sendActionMessage("getSongTitle", (_tabId, title) => {
             console.debug("Got answer with title:", title);
@@ -69,8 +69,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.warn("Fehler beim auslesen des Titels:", title, _tabId);
             } else {
                 songTitle.textContent = `${title}`;
-                scrollContent.style.width = (songTitle.offsetWidth) + "px";
-                scrollContent.style.animationDuration = (songTitle.offsetWidth / 25) + "s";
+                elements.scrollContent.style.width = (songTitle.offsetWidth) + "px";
+                elements.scrollContent.style.animationDuration = (songTitle.offsetWidth / 25) + "s";
 
                 for (let i = 0; i < sheet.cssRules.length; i++) {
                     const rule = sheet.cssRules[i];
@@ -79,11 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         break;
                     }
                 }
-                if ((scrollContent.offsetWidth - scrollWrapper.offsetWidth) >= 0) {
+                if ((elements.scrollContent.offsetWidth - elements.scrollWrapper.offsetWidth) >= 0) {
                     const keyframes = `
                 @keyframes scroll-text {
                     0%, 20% {transform: translateX(0%)}
-                    80%, 100% {transform: translateX(-${scrollContent.offsetWidth - scrollWrapper.offsetWidth}px)}
+                    80%, 100% {transform: translateX(-${elements.scrollContent.offsetWidth - elements.scrollWrapper.offsetWidth}px)}
                 }`;
                     changed = false;
                     sheet.insertRule(keyframes, 0);
@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    //displays current playbacktime, also responsible for setting songtitle and duration upon a new song starting
     function displayCurrentPlaybackTime_timer(playbackTimer) {
         sendActionMessage("getPlaybackTime_timer", (_tabId, progress) => {
             console.debug("Got answer with progress of:", progress);
@@ -99,9 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.warn("Fehler beim auslesen des Songprogress (Timer):", progress, _tabId);
             } else {
                 if (progress < 2) {
-                    displaySongDuration(songDuration);
-                    displaySongTitle(songTitle);
-                    //changed = true;
+                    displaySongDuration(elements.songDuration);
+                    displaySongTitle(elements.songTitle);
                 }
                 const minutes = Math.floor(progress / 60);
                 const seconds = progress % 60;
@@ -110,6 +110,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+//sets up eventListeners for playcontrol buttons
+function setupControlEvenets(playControl, previous, skip) {
+    playControl.addEventListener('click', () => {
+        sendActionMessage("play");
+        changePlayIcon(elements.playIcon);
+    });
+
+    previous.addEventListener('click', () => {
+        sendActionMessage("previous");
+    });
+
+    skip.addEventListener('click', () => {
+        sendActionMessage("skip");
+    });
+}
 
 function sendActionMessage(action, onResponse) {
   chrome.tabs.query({}, (tabs) => {

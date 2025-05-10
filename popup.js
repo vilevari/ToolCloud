@@ -108,6 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    //responsible for focusing the addon. without this eventListeners like spacebar would be a bit more unreliable and might require the user to click the addon body
+    document.getElementById('focus-catcher').focus();
 });
 
 function sendActionMessage(action, onResponse) {

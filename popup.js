@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         () => displayCurrentPlaybackTime_timer(elements.playbackTimer, elements.songDuration),
         () => displaySongDuration(elements.songDuration),
         () => displaySongTitle(elements.songTitle),
-        () => setupControlEvenets(elements.playControl, elements.previousButton, elements.skipButton, elements.playIcon)
+        () => setupControlEvents(elements.playControl, elements.previousButton, elements.skipButton, elements.playIcon)
     ].forEach(fn => fn());
 
     //every second after init
@@ -85,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     0%, 20% {transform: translateX(0%)}
                     80%, 100% {transform: translateX(-${elements.scrollContent.offsetWidth - elements.scrollWrapper.offsetWidth}px)}
                 }`;
-                    changed = false;
                     sheet.insertRule(keyframes, 0);
                 }
             }
@@ -138,15 +137,33 @@ function sendActionMessage(action, onResponse) {
   });
 }
 
-//sets up eventListeners for playcontrol buttons
-function setupControlEvenets(playControl, previous, skip, playIcon) {
+function setupControlEvents(playControl, previous, skip, playIcon) {
     document.addEventListener("keydown", (event) => {
-        if (event.code === "Space" || event.key === " ") {
-            event.preventDefault();
-            sendActionMessage("play");
-            changePlayIcon(playIcon);
+        switch (event.code) {
+            case "Space":
+            case "KeyK":
+            case " ":
+                event.preventDefault();
+                sendActionMessage("play");
+                changePlayIcon(playIcon);
+                break;
 
+            case "ArrowLeft":
+            case "KeyJ":
+                event.preventDefault();
+                sendActionMessage("previous");
+                break;
+
+            case "ArrowRight":
+            case "KeyL":
+                event.preventDefault();
+                sendActionMessage("skip");
+                break;
+
+            default:
+                break;
         }
+
     })
 
     playControl.addEventListener('click', (e) => {

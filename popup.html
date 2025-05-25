@@ -7,62 +7,63 @@
     <meta charset="UTF-8">
 </head>
 <body>
-  <h2>ToolCloud</h2>
-  <span class="caption">QoL Improvements for SoundCloud.com</span>
+    <div id="focus-catcher" tabindex="0" style="position:absolute; left:-9999px;"></div>
+    <h2>ToolCloud</h2>
+    <span class="caption">QoL Improvements for SoundCloud.com</span>
 
-  <div class="checkboxes">
-    <label class="custom-checkbox">
-      <input type="checkbox" id="toggle-scroll">
-      <span class="checkmark"></span>
-      <span class="label-text">
-        Auto-Scroll Playlists
-      </span>
-    </label>
-    <label class="custom-checkbox">
-      <input type="checkbox" id="toggle-autoplay_shuffle">
-      <span class="checkmark"></span>
-      <span class="label-text">
-        Auto-Play Playlists on Shuffle
-      </span>
-    </label>
-  </div>
-
-  <div class="timeline">
-    <div class="background"></div>
-    <div id="timeline_foreground" class="foreground"></div>
-    <span id="timeline_secondsPlayed" class="secondsPlayed">0:00</span>
-    <span id="timeline_songDuration" class="songDuration">0:01</span>
-    <div class="title-wrapper">
-    <span class="nowPlaying">Now playing:</span>
-    <div id="scroll-wrapper" class="scroll-wrapper">
-        <div id="scroll-content" class="scroll-content">
-            <span id="songTitle" class="songTitle">-</span>
-        </div>
-      </div>
+    <div class="checkboxes">
+        <label class="custom-checkbox">
+            <input type="checkbox" id="toggle-scroll">
+            <span class="checkmark"></span>
+            <span class="label-text">
+                Auto-Scroll Playlists
+            </span>
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" id="toggle-autoplay_shuffle">
+            <span class="checkmark"></span>
+            <span class="label-text">
+                Auto-Play Playlists on Shuffle
+            </span>
+        </label>
     </div>
-  </div>
 
-  <div class="playControls">
-    <button id="previous" title="Previous">
-      <i class="fas fa-step-backward"></i>
-    </button>
-    <button id="playControl" title="Play / Pause">
-      <i class="fas fa-circle-pause"></i>
-    </button>
-    <button id="skip" title="Skip">
-      <i class="fas fa-step-forward"></i>
-    </button>
-  </div>
+    <div class="timeline">
+        <div class="background"></div>
+        <div id="timeline_foreground" class="foreground"></div>
+        <span id="timeline_secondsPlayed" class="secondsPlayed">0:00</span>
+        <span id="timeline_songDuration" class="songDuration">0:01</span>
+        <div class="title-wrapper">
+            <span class="nowPlaying">Now playing:</span>
+            <div id="scroll-wrapper" class="scroll-wrapper">
+                <div id="scroll-content" class="scroll-content">
+                    <span id="songTitle" class="songTitle">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <footer class="footer">
-    <span>
-      made by
-      <a href="https://github.com/vilevari">ventesque</a>
-    </span>
-    <a href="https://github.com/vilevari/ToolCloud/blob/main/README.md" class="info-icon">
-      <i class="fas fa-circle-info"></i>
-    </a>
-  </footer>
-  <script src="popup.js"></script>
+    <div class="playControls">
+        <button id="previous" title="Previous">
+            <i class="fas fa-step-backward"></i>
+        </button>
+        <button id="playControl" title="Play / Pause">
+            <i class="fas fa-circle-pause"></i>
+        </button>
+        <button id="skip" title="Skip">
+            <i class="fas fa-step-forward"></i>
+        </button>
+    </div>
+
+    <footer class="footer">
+        <span>
+            made by
+            <a href="https://github.com/vilevari">ventesque</a>
+        </span>
+        <a href="https://github.com/vilevari/ToolCloud/blob/main/README.md" class="info-icon">
+            <i class="fas fa-circle-info"></i>
+        </a>
+    </footer>
+    <script src="popup.js"></script>
 </body>
 </html>

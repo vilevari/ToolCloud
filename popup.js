@@ -1,80 +1,77 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const checkbox_autoscroll = document.getElementById("toggle-scroll");
-  const checkbox_autoplayShuffle = document.getElementById("toggle-autoplay_shuffle");
-  const skipButton = document.getElementById("skip");
-  const previousButton = document.getElementById("previous");
-  const playControl = document.getElementById("playControl");
-  const playIcon = playControl.querySelector('i');
-  const playbackTimeline = document.getElementById("timeline_foreground");
-  const playbackTimer = document.getElementById("timeline_secondsPlayed");
-  const songDuration = document.getElementById("timeline_songDuration");
-  const songTitle = document.getElementById("songTitle");
-  const scrollContent = document.getElementById("scroll-content");
-  const scrollWrapper = document.getElementById("scroll-wrapper");
-  const styleEl = document.createElement('style');
-  let changed = true;
-  styleEl.id = 'my-keyframes-style';
-  document.head.appendChild(styleEl);
-  const sheet = styleEl.sheet;
-  changePlayIcon(playIcon);
-  displayCurrentPlaybackTime_timeline(playbackTimeline);
-  displayCurrentPlaybackTime_timer(playbackTimer, songDuration);
-  displaySongDuration(songDuration);
-  displaySongTitle(songTitle);
-  setInterval(() => {
-    displayCurrentPlaybackTime_timeline(playbackTimeline);
-    displayCurrentPlaybackTime_timer(playbackTimer, songDuration);
-    displaySongTitle(songTitle);
-  }, 1000);
 
-  chrome.storage.local.get(["scrollEnabled"], (result) => {
-    if (result && result.scrollEnabled !== undefined) {
-      checkbox_autoscroll.checked = result.scrollEnabled;
-    } else {
-      checkbox_autoscroll.checked = false; 
+    //html elements used in following logic
+    const elements = {
+        autoscroll: document.getElementById("toggle-scroll"),
+        autoplayShuffle: document.getElementById("toggle-autoplay_shuffle"),
+        skipButton: document.getElementById("skip"),
+        previousButton: document.getElementById("previous"),
+        playControl: document.getElementById("playControl"),
+        playbackTimeline: document.getElementById("timeline_foreground"),
+        playbackTimer: document.getElementById("timeline_secondsPlayed"),
+        songDuration: document.getElementById("timeline_songDuration"),
+        songTitle: document.getElementById("songTitle"),
+        scrollContent: document.getElementById("scroll-content"),
+        scrollWrapper: document.getElementById("scroll-wrapper"),
+    };
+    elements.playIcon = elements.playControl.querySelector('i');
+
+    //needed for changing title animation from this document
+    const styleEl = document.createElement('style');
+    styleEl.id = 'my-keyframes-style';
+    document.head.appendChild(styleEl);
+    const sheet = styleEl.sheet;
+
+    //init
+    [
+        () => changePlayIcon(elements.playIcon),
+        () => displayCurrentPlaybackTime_timeline(elements.playbackTimeline),
+        () => displayCurrentPlaybackTime_timer(elements.playbackTimer, elements.songDuration),
+        () => displaySongDuration(elements.songDuration),
+        () => displaySongTitle(elements.songTitle),
+        () => setupControlEvents(elements.playControl, elements.previousButton, elements.skipButton, elements.playIcon)
+    ].forEach(fn => fn());
+
+    //every second after init
+    setInterval(updatePlayback, 1000);
+    function updatePlayback() {
+        displayCurrentPlaybackTime_timeline(elements.playbackTimeline);
+        displayCurrentPlaybackTime_timer(elements.playbackTimer);
     }
-  });
 
-  chrome.storage.local.get(["autoplayShuffleEnabled"], (result) => {
-    if (result && result.autoplayShuffleEnabled !== undefined) {
-      checkbox_autoplayShuffle.checked = result.autoplayShuffleEnabled;
-    } else {
-      checkbox_autoplayShuffle.checked = false;
+    //responsible for loading & saving correct checkbox status
+    function loadToggleState(key, checkbox) {
+        chrome.storage.local.get([key], (result) => {
+            checkbox.checked = !!result[key];
+        });
     }
-  });
 
-  checkbox_autoscroll.addEventListener("change", () => {
-    chrome.storage.local.set({ scrollEnabled: checkbox_autoscroll.checked });
-  });
+    function saveToggleState(key, checkbox) {
+        chrome.storage.local.set({ [key]: checkbox.checked });
+    }
 
-  checkbox_autoplayShuffle.addEventListener("change", () => {
-    chrome.storage.local.set({ autoplayShuffleEnabled: checkbox_autoplayShuffle.checked });
-  });
+    loadToggleState("scrollEnabled", elements.autoscroll);
+    loadToggleState("autoplayShuffleEnabled", elements.autoplayShuffle);
 
-  playControl.addEventListener('click', () => {
-    sendActionMessage("play");
-    changePlayIcon(playIcon);
-  });
+    elements.autoscroll.addEventListener("change", () => {
+        saveToggleState("scrollEnabled", elements.autoscroll);
+    });
 
-  previousButton.addEventListener('click', () => {
-    sendActionMessage("previous");
-  });
-  
-  skipButton.addEventListener('click', () => {
-    sendActionMessage("skip");
-  });
+    elements.autoplayShuffle.addEventListener("change", () => {
+        saveToggleState("autoplayShuffleEnabled", elements.autoplayShuffle);
+    });
 
-function displaySongTitle(songTitle) {
-    sendActionMessage("getSongTitle", (_tabId, title) => {
-        console.debug("Got answer with title:", title);
-        if (title === 'unknown') {
-            console.warn("Fehler beim auslesen des Titels:", title, _tabId);
-        } else {
-            songTitle.textContent = `${title}`;
-            scrollContent.style.width = (songTitle.offsetWidth) + "px";
-            scrollContent.style.animationDuration = (songTitle.offsetWidth / 25) + "s";
+    //displays song title and adds animation to it
+    function displaySongTitle(songTitle) {
+        sendActionMessage("getSongTitle", (_tabId, title) => {
+            console.debug("Got answer with title:", title);
+            if (title === 'unknown') {
+                console.warn("Fehler beim auslesen des Titels:", title, _tabId);
+            } else {
+                songTitle.textContent = `${title}`;
+                elements.scrollContent.style.width = (songTitle.offsetWidth) + "px";
+                elements.scrollContent.style.animationDuration = (songTitle.offsetWidth / 25) + "s";
 
-            if (changed) {
                 for (let i = 0; i < sheet.cssRules.length; i++) {
                     const rule = sheet.cssRules[i];
                     if (rule.type === CSSRule.KEYFRAMES_RULE) {
@@ -82,28 +79,28 @@ function displaySongTitle(songTitle) {
                         break;
                     }
                 }
-                if ((scrollContent.offsetWidth - scrollWrapper.offsetWidth) >= 0) {
+                if ((elements.scrollContent.offsetWidth - elements.scrollWrapper.offsetWidth) >= 0) {
                     const keyframes = `
                 @keyframes scroll-text {
                     0%, 20% {transform: translateX(0%)}
-                    80%, 100% {transform: translateX(-${scrollContent.offsetWidth - scrollWrapper.offsetWidth}px)}
+                    80%, 100% {transform: translateX(-${elements.scrollContent.offsetWidth - elements.scrollWrapper.offsetWidth}px)}
                 }`;
-                    changed = false;
                     sheet.insertRule(keyframes, 0);
                 }
             }
-        }
-    });
+        });
     }
-    function displayCurrentPlaybackTime_timer(playbackTimer, songDuration) {
+
+    //displays current playbacktime, also responsible for setting songtitle and duration upon a new song starting
+    function displayCurrentPlaybackTime_timer(playbackTimer) {
         sendActionMessage("getPlaybackTime_timer", (_tabId, progress) => {
             console.debug("Got answer with progress of:", progress);
             if (progress === 'unknown') {
                 console.warn("Fehler beim auslesen des Songprogress (Timer):", progress, _tabId);
             } else {
                 if (progress < 2) {
-                    displaySongDuration(songDuration);
-                    changed = true;
+                    displaySongDuration(elements.songDuration);
+                    displaySongTitle(elements.songTitle);
                 }
                 const minutes = Math.floor(progress / 60);
                 const seconds = progress % 60;
@@ -111,6 +108,9 @@ function displaySongTitle(songTitle) {
             }
         });
     }
+
+    //responsible for focusing the addon. without this eventListeners like spacebar would be a bit more unreliable and might require the user to click the addon body
+    document.getElementById('focus-catcher').focus();
 });
 
 function sendActionMessage(action, onResponse) {
@@ -138,8 +138,50 @@ function sendActionMessage(action, onResponse) {
       });
     });
   });
+}
 
+function setupControlEvents(playControl, previous, skip, playIcon) {
+    document.addEventListener("keydown", (event) => {
+        switch (event.code) {
+            case "Space":
+            case "KeyK":
+            case " ":
+                event.preventDefault();
+                sendActionMessage("play");
+                changePlayIcon(playIcon);
+                break;
 
+            case "ArrowLeft":
+            case "KeyJ":
+                event.preventDefault();
+                sendActionMessage("previous");
+                break;
+
+            case "ArrowRight":
+            case "KeyL":
+                event.preventDefault();
+                sendActionMessage("skip");
+                break;
+
+            default:
+                break;
+        }
+
+    })
+
+    playControl.addEventListener('click', (e) => {
+        sendActionMessage("play");
+        changePlayIcon(playIcon);
+        e.currentTarget.blur();
+    });
+
+    previous.addEventListener('click', () => {
+        sendActionMessage("previous");
+    });
+
+    skip.addEventListener('click', () => {
+        sendActionMessage("skip");
+    });
 }
 
 function displaySongDuration(songDuration) {

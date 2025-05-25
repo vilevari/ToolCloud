@@ -8,13 +8,13 @@
                 setTimeout(() => {
                     pressSkipButton();
                 }, 600);
-            }, 1000);
+            }, 700);
         }, 300);
     }
 
     function pressPlayButton() {
-        const playButton = document.querySelectorAll('[title="Play"]')[0];
-    
+        const playButton = document.querySelector('.sc-button-play.playButton.sc-button.sc-button-xxlarge');
+        console.info(playButton);
         if(playButton){
             ToolCloudUtils.simulateClick(playButton);
             ToolCloudUtils.log("Playing playlist.");

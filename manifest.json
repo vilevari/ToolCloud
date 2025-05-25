@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ToolCloud - QoL for Soundcloud",
-  "version": "1.5",
+  "version": "1.6",
   "description": "This Addon provides a variety of tools that improve the SoundCloud experience.",
   "permissions": ["storage", "tabs"],
   "host_permissions": ["https://soundcloud.com/*"],
